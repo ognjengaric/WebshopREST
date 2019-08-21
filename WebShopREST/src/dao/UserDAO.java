@@ -38,14 +38,4 @@ public class UserDAO {
 		return null;
 	}
 	
-	public User findIfRegistered(User u) {
-		for(User user: users.values())
-		{	
-			if(u.getUsername().equals(user.getUsername()))
-			{
-				return u;
-			}
-		}		
-		return null;
-	}
 }

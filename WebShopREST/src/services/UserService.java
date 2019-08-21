@@ -32,9 +32,7 @@ public class UserService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response test(User u,@Context HttpServletRequest request)
 	{			
-		System.out.println(u.toString());
-		
-		
+		System.out.println(u.toString());		
 		
 		return Response.ok().build();			  
 	}
@@ -57,7 +55,9 @@ public class UserService {
 		
 		context.setAttribute("userDAO", users);
 		
-		request.getSession().setAttribute("user", user); // ?
+		request.getSession().setAttribute("user", user);
+		
+		System.out.println(request.getSession().getAttribute("user"));
 		
 		return Response.ok().build();			  
 	}
@@ -70,7 +70,7 @@ public class UserService {
 	{
 		UserDAO users = (UserDAO) context.getAttribute("userDAO");
 		
-		if(users.findIfRegistered(u) != null) {
+		if(users.getUsers().containsKey(u.getUsername())) {
 			return Response.status(400).build();
 		}
 		

@@ -2,7 +2,7 @@ package beans;
 
 import java.util.List;
 
-public class Ad {
+public class Ad{
 	
 	private String name;
 	private double price;
@@ -12,9 +12,11 @@ public class Ad {
 	//image
 	private String postingDate;
 	private String expirationDate;
-	private boolean isActive;
 	private List<Review> reviews;
 	private String city;
+	
+	private boolean isActive;
+	
 	public String getName() {
 		return name;
 	}
@@ -57,12 +59,6 @@ public class Ad {
 	public void setExpirationDate(String expirationDate) {
 		this.expirationDate = expirationDate;
 	}
-	public boolean isActive() {
-		return isActive;
-	}
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
-	}
 	public List<Review> getReviews() {
 		return reviews;
 	}
@@ -74,7 +70,13 @@ public class Ad {
 	}
 	public void setCity(String city) {
 		this.city = city;
-	}
+	}	
 	
+	public boolean isActive() {
+		return isActive;
+	}
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;		
+	}
 	
 }

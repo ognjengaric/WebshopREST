@@ -9,6 +9,9 @@ public class Review {
 	//slika
 	private boolean isDescriptionAccurate;
 	private boolean isDealFulfilled;
+	
+	private boolean isActive;
+	
 	public String getTitle() {
 		return title;
 	}
@@ -33,6 +36,10 @@ public class Review {
 	public void setDealFulfilled(boolean isDealFulfilled) {
 		this.isDealFulfilled = isDealFulfilled;
 	}
-	
-	
+	public boolean isActive() {
+		return isActive;
+	}
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
 }

@@ -2,15 +2,15 @@ package beans;
 
 public class User {
 	
-	protected String username;
-	protected String password;
-	protected String firstName;
-	protected String lastName;
-	protected Object role;
-	protected String telephoneNumber;
-	protected String email;
-	protected String city;
-	protected String registrationDate;
+	private String username;
+	private String password;
+	private String firstName;
+	private String lastName;
+	private Object role;
+	private String telephoneNumber;
+	private String email;
+	private String city;
+	private String registrationDate;
 	
 	//Pri svakom registrovanju 
 	public User() {

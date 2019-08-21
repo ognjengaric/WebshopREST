@@ -1,34 +1,39 @@
 package beans;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Seller{
 		
-	private List<Ad> publishedAds;
-	private List<Ad> deliveredProductAds;
-	private List<Message> messages;
+	private ArrayList<Ad> publishedAds;
+	private ArrayList<Ad> deliveredProductAds;
+	private ArrayList<Message> messages;
 	private int numberOfLikes;
 	private int numberOfDislikes;
 	
 	public Seller() {
+		this.publishedAds = new ArrayList<Ad>();
+		this.deliveredProductAds = new ArrayList<Ad>();
+		this.messages = new ArrayList<>();
+		this.numberOfLikes = 0;
+		this.numberOfDislikes = 0;
 	}
 	
-	public List<Ad> getPublishedAds() {
+	public ArrayList<Ad> getPublishedAds() {
 		return publishedAds;
 	}
-	public void setPublishedAds(List<Ad> publishedAds) {
+	public void setPublishedAds(ArrayList<Ad> publishedAds) {
 		this.publishedAds = publishedAds;
 	}
-	public List<Ad> getDeliveredProductAds() {
+	public ArrayList<Ad> getDeliveredProductAds() {
 		return deliveredProductAds;
 	}
-	public void setDeliveredProductAds(List<Ad> deliveredProductAds) {
+	public void setDeliveredProductAds(ArrayList<Ad> deliveredProductAds) {
 		this.deliveredProductAds = deliveredProductAds;
 	}
-	public List<Message> getMessages() {
+	public ArrayList<Message> getMessages() {
 		return messages;
 	}
-	public void setMessages(List<Message> messages) {
+	public void setMessages(ArrayList<Message> messages) {
 		this.messages = messages;
 	}
 	public int getNumberOfLikes() {
@@ -42,5 +47,10 @@ public class Seller{
 	}
 	public void setNumberOfDislikes(int numberOfDislikes) {
 		this.numberOfDislikes = numberOfDislikes;
+	}
+	
+	@Override
+	public String toString() {
+		return "\nRole: Seller";
 	}
 }

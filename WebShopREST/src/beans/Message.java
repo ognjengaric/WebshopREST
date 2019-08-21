@@ -7,6 +7,9 @@ public class Message {
 	private String title;
 	private String content;
 	private String dateAndTime;
+	
+	private boolean isActive;
+	
 	public String getAdvertisementName() {
 		return advertisementName;
 	}
@@ -30,6 +33,12 @@ public class Message {
 	}
 	public void setDateAndTime(String dateAndTime) {
 		this.dateAndTime = dateAndTime;
+	}
+	public boolean isActive() {
+		return isActive;
+	}
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
 	}	
 	
 }

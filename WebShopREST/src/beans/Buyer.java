@@ -1,32 +1,35 @@
 package beans;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Buyer{
 	
-	private List<Ad> orderedProductAds;
-	private List<Ad> deliveredProductAds;
-	private List<Ad> favoriteAds;
+	private ArrayList<Ad> orderedProductAds;
+	private ArrayList<Ad> deliveredProductAds;
+	private ArrayList<Ad> favoriteAds;
 	
 	public Buyer() {
+		this.orderedProductAds = new ArrayList<Ad>();
+		this.deliveredProductAds = new ArrayList<Ad>();
+		this.favoriteAds = new ArrayList<Ad>();
 	}
 	
-	public List<Ad> getOrderedProductAds() {
+	public ArrayList<Ad> getOrderedProductAds() {
 		return orderedProductAds;
 	}
-	public void setOrderedProductAds(List<Ad> orderedProductAds) {
+	public void setOrderedProductAds(ArrayList<Ad> orderedProductAds) {
 		this.orderedProductAds = orderedProductAds;
 	}
-	public List<Ad> getDeliveredProductAds() {
+	public ArrayList<Ad> getDeliveredProductAds() {
 		return deliveredProductAds;
 	}
-	public void setDeliveredProductAds(List<Ad> deliveredProductAds) {
+	public void setDeliveredProductAds(ArrayList<Ad> deliveredProductAds) {
 		this.deliveredProductAds = deliveredProductAds;
 	}
-	public List<Ad> getFavoriteAds() {
+	public ArrayList<Ad> getFavoriteAds() {
 		return favoriteAds;
 	}
-	public void setFavoriteAds(List<Ad> favoriteAds) {
+	public void setFavoriteAds(ArrayList<Ad> favoriteAds) {
 		this.favoriteAds = favoriteAds;
 	}
 
