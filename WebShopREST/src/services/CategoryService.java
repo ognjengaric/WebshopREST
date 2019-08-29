@@ -22,8 +22,8 @@ public class CategoryService {
 	
 	@PostConstruct
 	public void init() {
-		if(context.getAttribute("categoryDAO") == null) {
-			context.setAttribute("categoryDAO", new CategoryDAO());
+		if(context.getAttribute("CategoryDAO") == null) {
+			context.setAttribute("CategoryDAO", new CategoryDAO());
 		}
 	}
 	
@@ -31,9 +31,10 @@ public class CategoryService {
 	@Path("/categories")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Collection<Category> getCategoryNames(@Context HttpServletRequest request)
+	public Collection<Category> getCategories(@Context HttpServletRequest request)
 	{
-		CategoryDAO categories = (CategoryDAO) context.getAttribute("categoryDAO");
+		CategoryDAO categories = (CategoryDAO) context.getAttribute("CategoryDAO");
 		return categories.getCategories().values();
 	}
+	
 }

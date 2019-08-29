@@ -9,7 +9,7 @@ public class Ad{
 	private String description;
 	private int numberOfLikes;
 	private int numberOfDislikes;
-	//image
+	private String image;
 	private String postingDate;
 	private String expirationDate;
 	private List<Review> reviews;
@@ -17,6 +17,30 @@ public class Ad{
 	
 	private boolean isActive;
 	
+	public Ad() {
+	}
+	
+	public Ad(String name, double price, String image) {
+		this.name = name;
+		this.price = price;
+		this.image = image;
+	}
+	
+	public Ad(String name, double price, String description, int numberOfLikes, int numberOfDislikes, String image,
+			String postingDate, String expirationDate, List<Review> reviews, String city, boolean isActive) {
+		this.name = name;
+		this.price = price;
+		this.description = description;
+		this.numberOfLikes = numberOfLikes;
+		this.numberOfDislikes = numberOfDislikes;
+		this.image = image;
+		this.postingDate = postingDate;
+		this.expirationDate = expirationDate;
+		this.reviews = reviews;
+		this.city = city;
+		this.isActive = isActive;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -46,6 +70,12 @@ public class Ad{
 	}
 	public void setNumberOfDislikes(int numberOfDislikes) {
 		this.numberOfDislikes = numberOfDislikes;
+	}
+	public String getImage() {
+		return image;
+	}
+	public void setImage(String image) {
+		this.image = image;
 	}
 	public String getPostingDate() {
 		return postingDate;

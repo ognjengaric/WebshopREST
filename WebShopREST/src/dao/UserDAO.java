@@ -9,7 +9,6 @@ public class UserDAO {
 	private HashMap<String, User> users = new HashMap<>();
 	
 	public UserDAO(){
-		users.put("user", new User("user", "user"));
 	}
 
 	public HashMap<String, User> getUsers() {
@@ -27,7 +26,7 @@ public class UserDAO {
 			{
 				if(u.getPassword().equals(user.getPassword()))
 				{
-					return u;
+					return user;
 				}
 				else
 				{
@@ -37,5 +36,28 @@ public class UserDAO {
 		}		
 		return null;
 	}
+	
+	public User findBySessionID(String sessionID) {
+		for(User user: users.values()) {
+			if(sessionID.equals(user.getAccessToken())){
+				return user;
+			} 
+		}
+		
+		return null;
+	}
+
+	@Override
+	public String toString() {
+		String retVal = "";
+		
+		for(User u : this.users.values()) {
+			retVal += u.toString();
+		}
+		
+		return retVal;
+	}
+	
+	
 	
 }

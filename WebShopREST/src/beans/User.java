@@ -1,5 +1,6 @@
 package beans;
 
+
 public class User {
 	
 	private String username;
@@ -12,15 +13,25 @@ public class User {
 	private String city;
 	private String registrationDate;
 	
+	
+	private String accessToken;
+	
 	//Pri svakom registrovanju 
 	public User() {
 		this.role = new Buyer();
 		this.registrationDate = java.time.LocalDate.now().toString();
 	}
 	
-	public User(String username, String password) {
+	public User(String username, String password, String firstName, String lastName, String telephoneNumber, String email, String city, String accessToken) {
 		this.username = username;
 		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.telephoneNumber = telephoneNumber;
+		this.email = email;
+		this.city = city;
+		this.role = new Buyer();
+		this.registrationDate = java.time.LocalDate.now().toString();
 	}
 	
 	public String getUsername() {
@@ -77,6 +88,15 @@ public class User {
 	public void setRegistrationDate(String registrationDate) {
 		this.registrationDate = registrationDate;
 	}
+	
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
 
 	@Override
 	public String toString() {
@@ -86,11 +106,12 @@ public class User {
 		retVal += "\nPassword: " + this.password;
 		retVal += "\nFirstname: " + this.firstName;
 		retVal += "\nLastname: " + this.lastName;
-		retVal += this.role.toString();
+		retVal += "\nRole: " + this.role.toString();
 		retVal += "\nTelephone number : " + this.telephoneNumber;
 		retVal += "\nEmail: " + this.email;
 		retVal += "\nCity: " + this.city;
 		retVal += "\nRegistration date: " + this.registrationDate;
+		retVal += "\nAcess token: " + this.accessToken;
 		
 		return retVal;
 	}
