@@ -2,7 +2,7 @@ package beans;
 
 import java.util.List;
 
-public class Ad{
+public class Ad implements Comparable<Ad>{
 	
 	private String name;
 	private double price;
@@ -107,6 +107,15 @@ public class Ad{
 	}
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;		
+	}
+
+	@Override
+	public int compareTo(Ad ad) {
+		int thisDifference = this.numberOfLikes - this.numberOfDislikes;
+		int adDifference = ad.getNumberOfLikes() - ad.getNumberOfDislikes();
+		
+		return (thisDifference > adDifference) ? -1 :
+				(thisDifference == adDifference ? 0 : 1);
 	}
 	
 }

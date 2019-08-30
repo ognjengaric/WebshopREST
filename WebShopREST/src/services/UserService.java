@@ -13,9 +13,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import assistive.UUIDGenerator;
 import beans.User;
 import dao.UserDAO;
+import helpers.UUIDGenerator;
 
 @Path("")
 public class UserService {

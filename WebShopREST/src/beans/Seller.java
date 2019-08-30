@@ -9,6 +9,7 @@ public class Seller{
 	private ArrayList<Message> messages;
 	private int numberOfLikes;
 	private int numberOfDislikes;
+	private String name;
 	
 	public Seller() {
 		this.publishedAds = new ArrayList<Ad>();
@@ -16,6 +17,7 @@ public class Seller{
 		this.messages = new ArrayList<>();
 		this.numberOfLikes = 0;
 		this.numberOfDislikes = 0;
+		this.name = "Seller";
 	}
 	
 	public ArrayList<Ad> getPublishedAds() {
@@ -27,6 +29,14 @@ public class Seller{
 	public ArrayList<Ad> getDeliveredProductAds() {
 		return deliveredProductAds;
 	}
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public void setDeliveredProductAds(ArrayList<Ad> deliveredProductAds) {
 		this.deliveredProductAds = deliveredProductAds;
 	}

@@ -1,5 +1,6 @@
 package services;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.annotation.PostConstruct;
@@ -31,12 +32,21 @@ public class AdService {
 	}
 	
 	@GET
+	@Path("/ads")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Collection<Ad> getAds(@Context HttpServletRequest request){
+		AdDAO ads = (AdDAO) context.getAttribute("AdDAO");
+		return ads.getAds().values();
+	}
+	
+	@GET
 	@Path("/favorite-ads")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Collection<Ad> getFavoriteAds(@Context HttpServletRequest request){
+	public ArrayList<Ad> getFavoriteAds(@Context HttpServletRequest request){
 		AdDAO ads = (AdDAO) context.getAttribute("AdDAO");
-		return ads.getAds().values();
+		return ads.get10FavoriteAds();
 	}
 	
 	@GET
