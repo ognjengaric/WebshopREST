@@ -8,7 +8,7 @@ public class Message {
 	private String content;
 	private String dateAndTime;
 	
-	private boolean isActive;
+	private boolean isDeleted;
 	
 	public String getAdvertisementName() {
 		return advertisementName;
@@ -34,11 +34,11 @@ public class Message {
 	public void setDateAndTime(String dateAndTime) {
 		this.dateAndTime = dateAndTime;
 	}
-	public boolean isActive() {
-		return isActive;
+	public boolean isDeleted() {
+		return isDeleted;
 	}
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
 	}	
 	
 }

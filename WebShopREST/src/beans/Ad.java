@@ -14,8 +14,14 @@ public class Ad implements Comparable<Ad>{
 	private String expirationDate;
 	private List<Review> reviews;
 	private String city;
-	
-	private boolean isActive;
+	private Status status;
+
+	public static enum Status {
+	    DELIVERED,
+	    PENDING,
+	    PUBLISHED,
+	    DELETED
+	};
 	
 	public Ad() {
 	}
@@ -27,7 +33,7 @@ public class Ad implements Comparable<Ad>{
 	}
 	
 	public Ad(String name, double price, String description, int numberOfLikes, int numberOfDislikes, String image,
-			String postingDate, String expirationDate, List<Review> reviews, String city, boolean isActive) {
+			String postingDate, String expirationDate, List<Review> reviews, String city) {
 		this.name = name;
 		this.price = price;
 		this.description = description;
@@ -38,7 +44,21 @@ public class Ad implements Comparable<Ad>{
 		this.expirationDate = expirationDate;
 		this.reviews = reviews;
 		this.city = city;
-		this.isActive = isActive;
+	}
+	
+	public Ad(String name, double price, String description, int numberOfLikes, int numberOfDislikes, String image,
+			String postingDate, String expirationDate, List<Review> reviews, String city, Status status) {
+		this.name = name;
+		this.price = price;
+		this.description = description;
+		this.numberOfLikes = numberOfLikes;
+		this.numberOfDislikes = numberOfDislikes;
+		this.image = image;
+		this.postingDate = postingDate;
+		this.expirationDate = expirationDate;
+		this.reviews = reviews;
+		this.city = city;
+		this.status = status;
 	}
 
 	public String getName() {
@@ -102,12 +122,13 @@ public class Ad implements Comparable<Ad>{
 		this.city = city;
 	}	
 	
-	public boolean isActive() {
-		return isActive;
+	public Status getStatus() {
+		return status;
 	}
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;		
-	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}	
 
 	@Override
 	public int compareTo(Ad ad) {

@@ -53,7 +53,7 @@ public class AdService {
 	@Path("/ad/{adName}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Ad getFavoriteAds(@PathParam("adName") String adName, @Context HttpServletRequest request){
+	public Ad getAdInfo(@PathParam("adName") String adName, @Context HttpServletRequest request){
 		AdDAO ads = (AdDAO) context.getAttribute("AdDAO");
 		return ads.getAds().get(adName);
 	}
