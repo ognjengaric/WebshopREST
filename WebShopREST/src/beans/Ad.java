@@ -1,19 +1,23 @@
 package beans;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Ad implements Comparable<Ad>{
 	
 	private String name;
 	private double price;
+
 	private String description;
+	private String image;
+	private String city;
+	private String expirationDate;
+	
+	private String postingDate;
+	
 	private int numberOfLikes;
 	private int numberOfDislikes;
-	private String image;
-	private String postingDate;
-	private String expirationDate;
-	private List<Review> reviews;
-	private String city;
+	private ArrayList<Review> reviews;
+
 	private Status status;
 
 	public static enum Status {
@@ -24,6 +28,11 @@ public class Ad implements Comparable<Ad>{
 	};
 	
 	public Ad() {
+		this.postingDate = java.time.LocalDate.now().toString();
+		this.numberOfDislikes = 0;
+		this.numberOfDislikes = 0;
+		this.reviews = new ArrayList<Review>(); 
+		this.status = Status.PUBLISHED;
 	}
 	
 	public Ad(String name, double price, String image) {
@@ -33,7 +42,7 @@ public class Ad implements Comparable<Ad>{
 	}
 	
 	public Ad(String name, double price, String description, int numberOfLikes, int numberOfDislikes, String image,
-			String postingDate, String expirationDate, List<Review> reviews, String city) {
+			String postingDate, String expirationDate, ArrayList<Review> reviews, String city) {
 		this.name = name;
 		this.price = price;
 		this.description = description;
@@ -47,7 +56,7 @@ public class Ad implements Comparable<Ad>{
 	}
 	
 	public Ad(String name, double price, String description, int numberOfLikes, int numberOfDislikes, String image,
-			String postingDate, String expirationDate, List<Review> reviews, String city, Status status) {
+			String postingDate, String expirationDate, ArrayList<Review> reviews, String city, Status status) {
 		this.name = name;
 		this.price = price;
 		this.description = description;
@@ -109,10 +118,10 @@ public class Ad implements Comparable<Ad>{
 	public void setExpirationDate(String expirationDate) {
 		this.expirationDate = expirationDate;
 	}
-	public List<Review> getReviews() {
+	public ArrayList<Review> getReviews() {
 		return reviews;
 	}
-	public void setReviews(List<Review> reviews) {
+	public void setReviews(ArrayList<Review> reviews) {
 		this.reviews = reviews;
 	}
 	public String getCity() {
@@ -129,6 +138,14 @@ public class Ad implements Comparable<Ad>{
 	public void setStatus(Status status) {
 		this.status = status;
 	}	
+	
+	@Override
+	public String toString() {
+		return "Ad [name=" + name + ", price=" + price + ", description=" + description + ", image=" + image + ", city="
+				+ city + ", expirationDate=" + expirationDate + ", postingDate=" + postingDate + ", numberOfLikes="
+				+ numberOfLikes + ", numberOfDislikes=" + numberOfDislikes + ", reviews=" + reviews + ", status="
+				+ status + "]";
+	}
 
 	@Override
 	public int compareTo(Ad ad) {

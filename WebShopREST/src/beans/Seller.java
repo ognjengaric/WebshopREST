@@ -6,6 +6,7 @@ public class Seller{
 		
 	private ArrayList<Ad> publishedAds;
 	private ArrayList<Ad> deliveredProductAds;
+	private ArrayList<Ad> pendingProductAds;
 	private ArrayList<Message> messages;
 	private int numberOfLikes;
 	private int numberOfDislikes;
@@ -14,6 +15,7 @@ public class Seller{
 	public Seller() {
 		this.publishedAds = new ArrayList<Ad>();
 		this.deliveredProductAds = new ArrayList<Ad>();
+		this.pendingProductAds = new ArrayList<Ad>();
 		this.messages = new ArrayList<>();
 		this.numberOfLikes = 0;
 		this.numberOfDislikes = 0;
@@ -57,6 +59,14 @@ public class Seller{
 	}
 	public void setNumberOfDislikes(int numberOfDislikes) {
 		this.numberOfDislikes = numberOfDislikes;
+	}
+	
+	public ArrayList<Ad> getPendingProductAds() {
+		return pendingProductAds;
+	}
+
+	public void setPendingProductAds(ArrayList<Ad> pendingProductAds) {
+		this.pendingProductAds = pendingProductAds;
 	}
 	
 	@Override
