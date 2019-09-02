@@ -1,6 +1,3 @@
 /services/
-/dao/
 /beans/
-/interfaces/
-/assistive/
-/helpers/
+/dao/

@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -44,7 +45,7 @@ public class AdService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Collection<Ad> getAds(@Context HttpServletRequest request){
 		AdDAO ads = (AdDAO) context.getAttribute("AdDAO");
-		return ads.getAds().values();
+		return ads.getPublishableAds();
 	}
 	
 	@GET
@@ -66,10 +67,10 @@ public class AdService {
 	}
 	
 	@POST
-	@Path("/post-ad/{username}")
+	@Path("/post-ad")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response postAd(@PathParam("username") String username, Ad ad, @Context HttpServletRequest request){
+	public Response postAd(Ad ad, @Context HttpServletRequest request){
 		UserDAO users = (UserDAO) context.getAttribute("UserDAO"); 		
 		AdDAO ads = (AdDAO) context.getAttribute("AdDAO");
 		
@@ -77,7 +78,10 @@ public class AdService {
 			return Response.status(400).build();
 		}
 		
-		((Seller)users.getUsers().get(username).getRole()).getPublishedAds().add(ad);
+		//add to seller orders list
+		((Seller)users.getUsers().get(ad.getSellerName()).getRole()).getPublishedAds().add(ad);
+		
+		//add to AdDAO hashmap
 		ads.getAds().put(ad.getName(), ad);
 		
 		context.setAttribute("UserDAO", users);
@@ -85,5 +89,29 @@ public class AdService {
 		
 		return Response.ok().build();
 	}
+	
+	
+	  @DELETE	  
+	  @Path("/delete-ad")	  
+	  @Consumes(MediaType.APPLICATION_JSON)	  
+	  @Produces(MediaType.APPLICATION_JSON) 
+	  public Response deleteAd(Ad ad, @Context HttpServletRequest request)
+	  { 
+		  UserDAO users = (UserDAO)context.getAttribute("UserDAO"); 
+		  AdDAO ads = (AdDAO)context.getAttribute("AdDAO");
+	  
+		  if(!ads.getAds().containsKey(ad.getName())) 
+		  { 
+			  return Response.status(400).build(); 
+		  }
+		  
+		  
+		  context.setAttribute("UserDAO", users); 
+		  context.setAttribute("AdDAO", ads);
+	  
+		  return Response.ok().build(); 
+	  }
+	 
+	
 	
 }

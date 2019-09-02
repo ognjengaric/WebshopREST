@@ -11,6 +11,7 @@ public class Ad implements Comparable<Ad>{
 	private String image;
 	private String city;
 	private String expirationDate;
+	private String sellerName;
 	
 	private String postingDate;
 	
@@ -23,7 +24,7 @@ public class Ad implements Comparable<Ad>{
 	public static enum Status {
 	    DELIVERED,
 	    PENDING,
-	    PUBLISHED,
+	    PUBLISHED,  //nepotrebno?
 	    DELETED
 	};
 	
@@ -139,12 +140,20 @@ public class Ad implements Comparable<Ad>{
 		this.status = status;
 	}	
 	
+	public String getSellerName() {
+		return sellerName;
+	}
+
+	public void setSellerName(String sellerName) {
+		this.sellerName = sellerName;
+	}
+	
 	@Override
 	public String toString() {
 		return "Ad [name=" + name + ", price=" + price + ", description=" + description + ", image=" + image + ", city="
 				+ city + ", expirationDate=" + expirationDate + ", postingDate=" + postingDate + ", numberOfLikes="
 				+ numberOfLikes + ", numberOfDislikes=" + numberOfDislikes + ", reviews=" + reviews + ", status="
-				+ status + "]";
+				+ status + ", sellerName:" + sellerName + "]";
 	}
 
 	@Override

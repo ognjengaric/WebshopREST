@@ -14,7 +14,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import beans.Ad;
+import beans.Ad.Status;
 import beans.Buyer;
+import beans.Seller;
 import beans.User;
 import dao.AdDAO;
 import dao.UserDAO;
@@ -140,9 +142,42 @@ public class UserService {
 		User user = users.findBySessionID(accessToken);
 		
 		Buyer b = (Buyer)user.getRole();
-		b.getFavoriteAds().remove(b.findAdInList(b.getFavoriteAds(), adName));		
+		b.getFavoriteAds().remove(AdDAO.findAdInList(b.getFavoriteAds(), adName));		
 		
 		context.setAttribute("UserDAO", users);
+		
+		return Response.ok(user).build();	
+	}
+	
+	@POST
+	@Path("/order/{adName}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response orderProduct(@PathParam("adName") String adName, String accessToken, @Context HttpServletRequest request) {
+
+		UserDAO users = (UserDAO) context.getAttribute("UserDAO");		
+		AdDAO ads = (AdDAO)  context.getAttribute("AdDAO");
+		
+		
+		//Set ad status to pending
+		Ad ad =  ads.getAds().get(adName);
+		ad.setStatus(Status.PENDING);
+		
+		User user = users.findBySessionID(accessToken);
+		
+		//Insert ad to buyer orders list
+		Buyer b = (Buyer)user.getRole();
+		b.getOrderedProductAds().add(ad);	
+		
+
+		Seller s = (Seller)users.getUsers().get(ad.getSellerName()).getRole();
+		//Insert ad to seller that created the ad
+		s.getPendingProductAds().add(ad);
+		//Remove ad from seller pusblished ads
+		s.getPublishedAds().remove(ad);
+		
+		context.setAttribute("UserDAO", users);
+		context.setAttribute("AdDAO", ads);
 		
 		return Response.ok(user).build();	
 	}
