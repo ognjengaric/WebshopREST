@@ -14,7 +14,6 @@ public class Buyer{
 		this.orderedProductAds = new ArrayList<Ad>();
 		this.deliveredProductAds = new ArrayList<Ad>();
 		this.favoriteAds = new ArrayList<Ad>();
-		this.name = "Buyer";
 	}
 	
 	
@@ -43,6 +42,15 @@ public class Buyer{
 	}
 	public void setFavoriteAds(ArrayList<Ad> favoriteAds) {
 		this.favoriteAds = favoriteAds;
+	}
+	
+	public Ad findAdInList(ArrayList<Ad> list, String adName) {
+		for(Ad ad : list) {
+			if(ad.getName().equals(adName)) {
+				return ad;
+			}
+		}
+		return null;
 	}
 
 	@Override

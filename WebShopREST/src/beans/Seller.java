@@ -69,6 +69,7 @@ public class Seller{
 		this.pendingProductAds = pendingProductAds;
 	}
 	
+	
 	@Override
 	public String toString() {
 		return "\nRole: Seller";

@@ -13,7 +13,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import beans.Ad;
+import beans.Buyer;
 import beans.User;
+import dao.AdDAO;
 import dao.UserDAO;
 import helpers.UUIDGenerator;
 
@@ -26,6 +29,9 @@ public class UserService {
 	public void init() {
 		if (context.getAttribute("UserDAO") == null) {	    
 			context.setAttribute("UserDAO", new UserDAO());
+		}
+		if(context.getAttribute("AdDAO") == null) {
+			context.setAttribute("AdDAO", new AdDAO());
 		}
 	}
 		
@@ -103,5 +109,43 @@ public class UserService {
 		
 		return Response.ok(user).build();	
 	}
+	
+	
+	@POST
+	@Path("/make-favorite/{adName}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response addFavoriteAd(@PathParam("adName") String adName, String accessToken, @Context HttpServletRequest request) {
+		
+		UserDAO users = (UserDAO) context.getAttribute("UserDAO");
+		AdDAO ads = (AdDAO)  context.getAttribute("AdDAO");
+		
+		Ad ad =  ads.getAds().get(adName);
+		
+		User user = users.findBySessionID(accessToken);
+		((Buyer)user.getRole()).getFavoriteAds().add(ad);
+		
+		context.setAttribute("UserDAO", users);
+		
+		return Response.ok().build();	
+	}
+	
+	@POST
+	@Path("/remove-favorite/{adName}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response removeFavoriteAd(@PathParam("adName") String adName, String accessToken, @Context HttpServletRequest request) {
+		UserDAO users = (UserDAO) context.getAttribute("UserDAO");		
+		
+		User user = users.findBySessionID(accessToken);
+		
+		Buyer b = (Buyer)user.getRole();
+		b.getFavoriteAds().remove(b.findAdInList(b.getFavoriteAds(), adName));		
+		
+		context.setAttribute("UserDAO", users);
+		
+		return Response.ok(user).build();	
+	}
+	
 	
 }
