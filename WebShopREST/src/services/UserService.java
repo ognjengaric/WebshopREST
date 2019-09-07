@@ -1,11 +1,11 @@
 package services;
 
+
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -34,7 +34,7 @@ public class UserService {
 		}
 		if(context.getAttribute("AdDAO") == null) {
 			context.setAttribute("AdDAO", new AdDAO());
-		}
+		} 
 	}
 		
 	
@@ -45,7 +45,7 @@ public class UserService {
 	public Response logIn(User u, @Context HttpServletRequest request)
 	{			
 		UserDAO users = (UserDAO) context.getAttribute("UserDAO");
-		
+
 		User user = users.find(u);
 
 		if(user == null)
@@ -89,16 +89,17 @@ public class UserService {
 		}
 		
 		users.getUsers().put(u.getUsername(), u);
+		
 		context.setAttribute("UserDAO", users);
 		
 		return Response.ok().build();	
 	}
 	
-	@GET
-	@Path("/data/{accessToken}")
+	@POST  //client does not send body data when get is used + sending token in body for safety reasons, not in URL
+	@Path("/user-data")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getUserData(@PathParam("accessToken") String accessToken,  @Context HttpServletRequest request) {
+	public Response getUserData(String accessToken,  @Context HttpServletRequest request){
 		
 		UserDAO users = (UserDAO) context.getAttribute("UserDAO");
 		
@@ -109,7 +110,7 @@ public class UserService {
 			return Response.status(400).build();
 		}
 		
-		return Response.ok(user).build();	
+		return Response.ok(user).build();
 	}
 	
 	
@@ -142,7 +143,12 @@ public class UserService {
 		User user = users.findBySessionID(accessToken);
 		
 		Buyer b = (Buyer)user.getRole();
-		b.getFavoriteAds().remove(AdDAO.findAdInList(b.getFavoriteAds(), adName));		
+	
+		for (Ad ad : b.getFavoriteAds()) {
+			if(ad.getName() == adName) {
+				b.getFavoriteAds().remove(ad);
+			}
+		}
 		
 		context.setAttribute("UserDAO", users);
 		
@@ -164,22 +170,55 @@ public class UserService {
 		ad.setStatus(Status.PENDING);
 		
 		User user = users.findBySessionID(accessToken);
-		
-		//Insert ad to buyer orders list
 		Buyer b = (Buyer)user.getRole();
+		//Insert ad to buyer ordered list
 		b.getOrderedProductAds().add(ad);	
 		
 
 		Seller s = (Seller)users.getUsers().get(ad.getSellerName()).getRole();
-		//Insert ad to seller that created the ad
-		s.getPendingProductAds().add(ad);
-		//Remove ad from seller pusblished ads
+		//Insert to seller pending ads
+		s.getPendingProductAds().add(ad);		
+		//Remove ad from seller published ads
+		System.out.println(s);
 		s.getPublishedAds().remove(ad);
+		
+
 		
 		context.setAttribute("UserDAO", users);
 		context.setAttribute("AdDAO", ads);
 		
 		return Response.ok(user).build();	
+	}
+	
+	@POST
+	@Path("/mark-delivered/{adName}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response markAsDelivered(@PathParam("adName") String adName, String accessToken, @Context HttpServletRequest request) {
+
+		UserDAO users = (UserDAO) context.getAttribute("UserDAO");		
+		AdDAO ads = (AdDAO)  context.getAttribute("AdDAO");
+		
+		
+		//Set ad status to published - to be available for ordering again 
+		Ad ad =  ads.getAds().get(adName);
+		ad.setStatus(Status.PUBLISHED);
+		
+		User user = users.findBySessionID(accessToken);
+		Buyer b = (Buyer)user.getRole();
+		
+		//Insert ad to buyer delivered list
+		b.getDeliveredProductAds().add(ad);	
+		//Remove from buyers ordered list
+		b.getOrderedProductAds().remove(ad);
+		
+		Seller s = (Seller)users.getUsers().get(ad.getSellerName()).getRole();
+		//Remove from seller pending ads
+		s.getPendingProductAds().remove(ad);
+		//Ad to seller delivered ads
+		s.getDeliveredProductAds().add(ad);
+		
+		return Response.ok().build();	
 	}
 	
 	

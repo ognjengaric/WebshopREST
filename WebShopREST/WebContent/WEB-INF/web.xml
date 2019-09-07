@@ -34,6 +34,9 @@
 	</filter>
 	<filter-mapping>
   		<filter-name>CorsFilter</filter-name>
-  		<url-pattern>/*</url-pattern>
+  		<url-pattern>*</url-pattern>
 	</filter-mapping>
+	<listener>
+  		<listener-class>helpers.AttributeListener</listener-class>
+	</listener>
 </web-app>

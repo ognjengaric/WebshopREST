@@ -2,7 +2,6 @@ package dao;
 
 import java.util.HashMap;
 
-import beans.Seller;
 import beans.User;
 
 public class UserDAO {
@@ -10,14 +9,6 @@ public class UserDAO {
 	private HashMap<String, User> users = new HashMap<>();
 	
 	public UserDAO(){
-		User seller1 = new User("seller1", "seller1", "seller", "seller", "555-333", "seller@s.com", "New York", null);
-		User seller2 = new User("seller2", "seller2", "seller", "seller", "555-333", "seller@s.com", "New York", null);
-		Seller s1 = new Seller();
-		Seller s2 = new Seller();
-		seller1.setRole(s1);
-		seller2.setRole(s2);
-		users.put(seller1.getUsername(), seller1);
-		users.put(seller2.getUsername(), seller2);
 	}
 	
 

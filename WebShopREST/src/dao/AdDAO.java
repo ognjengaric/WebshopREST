@@ -22,9 +22,11 @@ public class AdDAO {
 		this.ads = ads;
 	}
 	
-	public ArrayList<Ad> get10FavoriteAds(){
+	
+	//Promeni u oglase koji se nalaze u najvise omiljenih
+	public ArrayList<Ad> favoriteAds(){
 		 
-		ArrayList<Ad> favoriteAds = new ArrayList<Ad>(this.getPublishableAds());		
+		ArrayList<Ad> favoriteAds = new ArrayList<Ad>(this.publishableAds());		
 		Collections.sort(favoriteAds);
 		
 		if(!(favoriteAds.size() < 10)) {
@@ -36,7 +38,7 @@ public class AdDAO {
 	}
 	
 	//ads to be published
-	public ArrayList<Ad> getPublishableAds(){
+	public ArrayList<Ad> publishableAds(){
 		ArrayList<Ad> retList = new ArrayList<Ad>();
 		
 		for(Ad ad : this.ads.values()) {
@@ -47,15 +49,17 @@ public class AdDAO {
 		
 		return retList;
 	}
-	
-	public static Ad findAdInList(ArrayList<Ad> list, String adName) {
+
+
+	@Override
+	public String toString() {
+		String retVal = "";
 		
-		for(Ad ad : list) {
-			if(ad.getName().equals(adName)) {
-				return ad;
-			}
+		for(Ad ad : this.ads.values()) {
+			retVal += ad.toString();
 		}
-		return null;
+		
+		return retVal;
 	}
 	
 }

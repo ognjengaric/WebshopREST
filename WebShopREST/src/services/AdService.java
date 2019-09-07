@@ -18,8 +18,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import beans.Ad;
+import beans.Buyer;
+import beans.Category;
 import beans.Seller;
+import beans.User;
+import beans.Ad.Status;
 import dao.AdDAO;
+import dao.CategoryDAO;
 import dao.UserDAO;
 
 
@@ -36,6 +41,9 @@ public class AdService {
 		}
 		if(context.getAttribute("UserDAO") == null) {
 			context.setAttribute("UserDAO", new UserDAO());
+		} 
+		if(context.getAttribute("CategoryDAO") == null) {
+			context.setAttribute("CategoryDAO", new CategoryDAO());
 		}
 	}
 	
@@ -44,8 +52,8 @@ public class AdService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Collection<Ad> getAds(@Context HttpServletRequest request){
-		AdDAO ads = (AdDAO) context.getAttribute("AdDAO");
-		return ads.getPublishableAds();
+		AdDAO ads = (AdDAO) context.getAttribute("AdDAO");		
+		return ads.publishableAds();
 	}
 	
 	@GET
@@ -54,7 +62,7 @@ public class AdService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public ArrayList<Ad> getFavoriteAds(@Context HttpServletRequest request){
 		AdDAO ads = (AdDAO) context.getAttribute("AdDAO");
-		return ads.get10FavoriteAds();
+		return ads.favoriteAds();
 	}
 	
 	@GET
@@ -78,8 +86,10 @@ public class AdService {
 			return Response.status(400).build();
 		}
 		
-		//add to seller orders list
+		//add to seller published list
 		((Seller)users.getUsers().get(ad.getSellerName()).getRole()).getPublishedAds().add(ad);
+		
+		System.out.println((Seller)users.getUsers().get(ad.getSellerName()).getRole());
 		
 		//add to AdDAO hashmap
 		ads.getAds().put(ad.getName(), ad);
@@ -92,19 +102,51 @@ public class AdService {
 	
 	
 	  @DELETE	  
-	  @Path("/delete-ad")	  
+	  @Path("/delete-ad/{adName}")	  
 	  @Consumes(MediaType.APPLICATION_JSON)	  
 	  @Produces(MediaType.APPLICATION_JSON) 
-	  public Response deleteAd(Ad ad, @Context HttpServletRequest request)
+	  public Response deleteAd(@PathParam("adName") String adName, @Context HttpServletRequest request)
 	  { 
 		  UserDAO users = (UserDAO)context.getAttribute("UserDAO"); 
 		  AdDAO ads = (AdDAO)context.getAttribute("AdDAO");
-	  
-		  if(!ads.getAds().containsKey(ad.getName())) 
-		  { 
-			  return Response.status(400).build(); 
+		  CategoryDAO categories = (CategoryDAO)context.getAttribute("CategoryDAO");
+		  
+		  Ad ad = ads.getAds().get(adName);
+		  
+		  
+		  //if seller has this ad in delivered items, it cannot be deleted
+		  if(((Seller)users.getUsers().get(ad.getSellerName()).getRole()).getDeliveredProductAds().contains(ad)) {
+			  return Response.status(400).build();
 		  }
 		  
+		  //set status to deleted
+		  ads.getAds().get(adName).setStatus(Status.DELETED);
+		  
+		  
+		  //remove from seller published list
+		  ((Seller)users.getUsers().get(ad.getSellerName()).getRole()).getPublishedAds().remove(ad);
+		  
+		  
+		  //remove if in any user favorite list
+		  for(User u : users.getUsers().values()) {
+			  
+			  if(u.getRole() instanceof Buyer) {
+				  
+				  Buyer b = (Buyer) u.getRole();
+				  
+				  if(b.getFavoriteAds().contains(ad)) {
+					  b.getFavoriteAds().remove(ad);
+				  }
+			  }			  
+
+		  }		  
+		  
+		  //remove if in certain category
+		  for(Category c : categories.getCategories().values()) {
+			  if(c.getAds().contains(ad)) {
+				  c.getAds().remove(ad);
+			  }
+		  }
 		  
 		  context.setAttribute("UserDAO", users); 
 		  context.setAttribute("AdDAO", ads);
@@ -112,6 +154,6 @@ public class AdService {
 		  return Response.ok().build(); 
 	  }
 	 
-	
+	  
 	
 }

@@ -72,6 +72,6 @@ public class Seller{
 	
 	@Override
 	public String toString() {
-		return "\nRole: Seller";
+		return "\nRole: Seller \nPublished: "+ this.publishedAds +"\nPending:" + this.pendingProductAds + "\nDelivered:" + this.deliveredProductAds;
 	}
 }

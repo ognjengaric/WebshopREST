@@ -22,15 +22,14 @@ public class Ad implements Comparable<Ad>{
 	private Status status;
 
 	public static enum Status {
-	    DELIVERED,
 	    PENDING,
-	    PUBLISHED,  //nepotrebno?
+	    PUBLISHED,  
 	    DELETED
 	};
 	
 	public Ad() {
 		this.postingDate = java.time.LocalDate.now().toString();
-		this.numberOfDislikes = 0;
+		this.numberOfLikes = 0;
 		this.numberOfDislikes = 0;
 		this.reviews = new ArrayList<Review>(); 
 		this.status = Status.PUBLISHED;
@@ -40,6 +39,7 @@ public class Ad implements Comparable<Ad>{
 		this.name = name;
 		this.price = price;
 		this.image = image;
+		this.status = Status.PUBLISHED;
 	}
 	
 	public Ad(String name, double price, String description, int numberOfLikes, int numberOfDislikes, String image,
