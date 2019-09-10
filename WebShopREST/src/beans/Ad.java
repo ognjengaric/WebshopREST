@@ -20,10 +20,12 @@ public class Ad implements Comparable<Ad>{
 	private ArrayList<Review> reviews;
 
 	private Status status;
+	private int inFavoriteLists;
 
 	public static enum Status {
 	    PENDING,
 	    PUBLISHED,  
+	    DELIVERED,
 	    DELETED
 	};
 	
@@ -31,6 +33,7 @@ public class Ad implements Comparable<Ad>{
 		this.postingDate = java.time.LocalDate.now().toString();
 		this.numberOfLikes = 0;
 		this.numberOfDislikes = 0;
+		this.setInFavoriteLists(0);
 		this.reviews = new ArrayList<Review>(); 
 		this.status = Status.PUBLISHED;
 	}
@@ -148,6 +151,14 @@ public class Ad implements Comparable<Ad>{
 		this.sellerName = sellerName;
 	}
 	
+	public int getInFavoriteLists() {
+		return inFavoriteLists;
+	}
+
+	public void setInFavoriteLists(int inFavoriteLists) {
+		this.inFavoriteLists = inFavoriteLists;
+	}
+	
 	@Override
 	public String toString() {
 		return "Ad [name=" + name + ", price=" + price + ", description=" + description + ", image=" + image + ", city="
@@ -155,14 +166,11 @@ public class Ad implements Comparable<Ad>{
 				+ numberOfLikes + ", numberOfDislikes=" + numberOfDislikes + ", reviews=" + reviews + ", status="
 				+ status + ", sellerName:" + sellerName + "]";
 	}
-
+	//izmeni za favorites
 	@Override
-	public int compareTo(Ad ad) {
-		int thisDifference = this.numberOfLikes - this.numberOfDislikes;
-		int adDifference = ad.getNumberOfLikes() - ad.getNumberOfDislikes();
-		
-		return (thisDifference > adDifference) ? -1 :
-				(thisDifference == adDifference ? 0 : 1);
+	public int compareTo(Ad ad) {		
+		return (inFavoriteLists > ad.inFavoriteLists) ? -1 :
+				(inFavoriteLists == ad.inFavoriteLists ? 0 : 1);
 	}
 	
 }

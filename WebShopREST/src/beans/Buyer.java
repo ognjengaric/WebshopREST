@@ -4,16 +4,16 @@ import java.util.ArrayList;
 
 public class Buyer{
 	
-	private ArrayList<Ad> orderedProductAds;
-	private ArrayList<Ad> deliveredProductAds;
-	private ArrayList<Ad> favoriteAds;
+	private ArrayList<String> orderedProductAds;
+	private ArrayList<String> deliveredProductAds;
+	private ArrayList<String> favoriteAds;
 	private String name;
 	
 	
 	public Buyer() {
-		this.orderedProductAds = new ArrayList<Ad>();
-		this.deliveredProductAds = new ArrayList<Ad>();
-		this.favoriteAds = new ArrayList<Ad>();
+		this.orderedProductAds = new ArrayList<String>();
+		this.deliveredProductAds = new ArrayList<String>();
+		this.favoriteAds = new ArrayList<String>();
 		this.name = "Buyer";
 	}
 	
@@ -26,22 +26,22 @@ public class Buyer{
 		this.name = name;
 	}
 
-	public ArrayList<Ad> getOrderedProductAds() {
+	public ArrayList<String> getOrderedProductAds() {
 		return orderedProductAds;
 	}
-	public void setOrderedProductAds(ArrayList<Ad> orderedProductAds) {
+	public void setOrderedProductAds(ArrayList<String> orderedProductAds) {
 		this.orderedProductAds = orderedProductAds;
 	}
-	public ArrayList<Ad> getDeliveredProductAds() {
+	public ArrayList<String> getDeliveredProductAds() {
 		return deliveredProductAds;
 	}
-	public void setDeliveredProductAds(ArrayList<Ad> deliveredProductAds) {
+	public void setDeliveredProductAds(ArrayList<String> deliveredProductAds) {
 		this.deliveredProductAds = deliveredProductAds;
 	}
-	public ArrayList<Ad> getFavoriteAds() {
+	public ArrayList<String> getFavoriteAds() {
 		return favoriteAds;
 	}
-	public void setFavoriteAds(ArrayList<Ad> favoriteAds) {
+	public void setFavoriteAds(ArrayList<String> favoriteAds) {
 		this.favoriteAds = favoriteAds;
 	}
 

@@ -22,15 +22,10 @@ public class User {
 		this.registrationDate = java.time.LocalDate.now().toString();
 	}
 	
-	public User(String username, String password, String firstName, String lastName, String telephoneNumber, String email, String city, String accessToken) {
+	public User(String username, String password) {
 		this.username = username;
 		this.password = password;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.telephoneNumber = telephoneNumber;
-		this.email = email;
-		this.city = city;
-		this.role = new Buyer();
+		this.role = new Administrator();
 		this.registrationDate = java.time.LocalDate.now().toString();
 	}
 	

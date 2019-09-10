@@ -4,31 +4,31 @@ import java.util.ArrayList;
 
 public class Seller{
 		
-	private ArrayList<Ad> publishedAds;
-	private ArrayList<Ad> deliveredProductAds;
-	private ArrayList<Ad> pendingProductAds;
+	private ArrayList<String> publishedAds;
+	private ArrayList<String> deliveredProductAds;
+	private ArrayList<String> pendingProductAds;
 	private ArrayList<Message> messages;
 	private int numberOfLikes;
 	private int numberOfDislikes;
 	private String name;
 	
 	public Seller() {
-		this.publishedAds = new ArrayList<Ad>();
-		this.deliveredProductAds = new ArrayList<Ad>();
-		this.pendingProductAds = new ArrayList<Ad>();
+		this.publishedAds = new ArrayList<String>();
+		this.deliveredProductAds = new ArrayList<String>();
+		this.pendingProductAds = new ArrayList<String>();
 		this.messages = new ArrayList<>();
 		this.numberOfLikes = 0;
 		this.numberOfDislikes = 0;
 		this.name = "Seller";
 	}
 	
-	public ArrayList<Ad> getPublishedAds() {
+	public ArrayList<String> getPublishedAds() {
 		return publishedAds;
 	}
-	public void setPublishedAds(ArrayList<Ad> publishedAds) {
+	public void setPublishedAds(ArrayList<String> publishedAds) {
 		this.publishedAds = publishedAds;
 	}
-	public ArrayList<Ad> getDeliveredProductAds() {
+	public ArrayList<String> getDeliveredProductAds() {
 		return deliveredProductAds;
 	}
 	public String getName() {
@@ -39,7 +39,7 @@ public class Seller{
 		this.name = name;
 	}
 
-	public void setDeliveredProductAds(ArrayList<Ad> deliveredProductAds) {
+	public void setDeliveredProductAds(ArrayList<String> deliveredProductAds) {
 		this.deliveredProductAds = deliveredProductAds;
 	}
 	public ArrayList<Message> getMessages() {
@@ -61,11 +61,11 @@ public class Seller{
 		this.numberOfDislikes = numberOfDislikes;
 	}
 	
-	public ArrayList<Ad> getPendingProductAds() {
+	public ArrayList<String> getPendingProductAds() {
 		return pendingProductAds;
 	}
 
-	public void setPendingProductAds(ArrayList<Ad> pendingProductAds) {
+	public void setPendingProductAds(ArrayList<String> pendingProductAds) {
 		this.pendingProductAds = pendingProductAds;
 	}
 	

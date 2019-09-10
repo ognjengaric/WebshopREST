@@ -2,6 +2,8 @@ package services;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
@@ -47,17 +49,27 @@ public class AdService {
 		}
 	}
 	
+	
+	@GET
+	@Path("/all_ads")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Collection<Ad> getAllAds(@Context HttpServletRequest request){
+		AdDAO ads = (AdDAO) context.getAttribute("AdDAO");		
+		return ads.getAds().values().stream().filter(ad -> ad.getStatus() != Status.DELETED).collect(Collectors.toList());
+	}
+	
 	@GET
 	@Path("/ads")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Collection<Ad> getAds(@Context HttpServletRequest request){
 		AdDAO ads = (AdDAO) context.getAttribute("AdDAO");		
-		return ads.publishableAds();
+		return ads.getAds().values().stream().filter(ad -> ad.getStatus() == Status.PUBLISHED || ad.getStatus() == Status.DELIVERED).collect(Collectors.toList());
 	}
 	
 	@GET
-	@Path("/favorite-ads")
+	@Path("/favorite_ads")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public ArrayList<Ad> getFavoriteAds(@Context HttpServletRequest request){
@@ -75,7 +87,7 @@ public class AdService {
 	}
 	
 	@POST
-	@Path("/post-ad")
+	@Path("/post_ad")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response postAd(Ad ad, @Context HttpServletRequest request){
@@ -87,9 +99,7 @@ public class AdService {
 		}
 		
 		//add to seller published list
-		((Seller)users.getUsers().get(ad.getSellerName()).getRole()).getPublishedAds().add(ad);
-		
-		System.out.println((Seller)users.getUsers().get(ad.getSellerName()).getRole());
+		((Seller)users.getUsers().get(ad.getSellerName()).getRole()).getPublishedAds().add(ad.getName());
 		
 		//add to AdDAO hashmap
 		ads.getAds().put(ad.getName(), ad);
@@ -102,7 +112,7 @@ public class AdService {
 	
 	
 	  @DELETE	  
-	  @Path("/delete-ad/{adName}")	  
+	  @Path("/delete_ad/{adName}")	  
 	  @Consumes(MediaType.APPLICATION_JSON)	  
 	  @Produces(MediaType.APPLICATION_JSON) 
 	  public Response deleteAd(@PathParam("adName") String adName, @Context HttpServletRequest request)
@@ -114,17 +124,17 @@ public class AdService {
 		  Ad ad = ads.getAds().get(adName);
 		  
 		  
-		  //if seller has this ad in delivered items, it cannot be deleted
-		  if(((Seller)users.getUsers().get(ad.getSellerName()).getRole()).getDeliveredProductAds().contains(ad)) {
+		  //if ad is delivered or pending, it cannot be deleted
+		  if(ad.getStatus() == Status.DELIVERED || ad.getStatus() == Status.PENDING) {
 			  return Response.status(400).build();
 		  }
 		  
 		  //set status to deleted
-		  ads.getAds().get(adName).setStatus(Status.DELETED);
+		  ad.setStatus(Status.DELETED);
 		  
 		  
 		  //remove from seller published list
-		  ((Seller)users.getUsers().get(ad.getSellerName()).getRole()).getPublishedAds().remove(ad);
+		  ((Seller)users.getUsers().get(ad.getSellerName()).getRole()).getPublishedAds().remove(adName);
 		  
 		  
 		  //remove if in any user favorite list
@@ -134,8 +144,8 @@ public class AdService {
 				  
 				  Buyer b = (Buyer) u.getRole();
 				  
-				  if(b.getFavoriteAds().contains(ad)) {
-					  b.getFavoriteAds().remove(ad);
+				  if(b.getFavoriteAds().contains(adName)) {
+					  b.getFavoriteAds().remove(adName);
 				  }
 			  }			  
 
@@ -143,17 +153,117 @@ public class AdService {
 		  
 		  //remove if in certain category
 		  for(Category c : categories.getCategories().values()) {
-			  if(c.getAds().contains(ad)) {
-				  c.getAds().remove(ad);
+			  if(c.getAds().contains(adName)) {
+				  c.getAds().remove(adName);
 			  }
 		  }
 		  
 		  context.setAttribute("UserDAO", users); 
 		  context.setAttribute("AdDAO", ads);
+		  context.setAttribute("CategoryDAO", categories);
 	  
 		  return Response.ok().build(); 
 	  }
 	 
-	  
 	
+	  @POST	  
+	  @Path("/edit_ad")	  
+	  @Consumes(MediaType.APPLICATION_JSON)	  
+	  @Produces(MediaType.APPLICATION_JSON) 
+	  public Response editAd(Ad ad, @Context HttpServletRequest request) {
+		  AdDAO ads = (AdDAO)context.getAttribute("AdDAO");
+		  
+		  //delivered or pending ad cannot be edited
+		  if(ad.getStatus() == Status.DELIVERED || ad.getStatus() == Status.PENDING) {
+			  return Response.status(400).build();
+		  }
+		  
+		  //set original posting date
+		  ad.setPostingDate(ads.getAds().get(ad.getName()).getPostingDate());
+		  //set number of favorite lists that this ad is in
+		  ad.setInFavoriteLists(ads.getAds().get(ad.getName()).getInFavoriteLists());
+		  
+		  //replace ad value 
+		  ads.getAds().put(ad.getName(), ad);
+		  
+		  context.setAttribute("AdDAO", ads);
+		  
+		  return Response.ok().build();
+	  }
+	  
+	  
+	  @DELETE	  
+	  @Path("/delete_ad_admin/{adName}")	  
+	  @Consumes(MediaType.APPLICATION_JSON)	  
+	  @Produces(MediaType.APPLICATION_JSON) 
+	  public Response deleteAdAdmin(@PathParam("adName") String adName, @Context HttpServletRequest request)
+	  { 
+		  UserDAO users = (UserDAO)context.getAttribute("UserDAO"); 
+		  AdDAO ads = (AdDAO)context.getAttribute("AdDAO");
+		  CategoryDAO categories = (CategoryDAO)context.getAttribute("CategoryDAO");
+		  
+		  Ad ad = ads.getAds().get(adName);
+		  
+		  //set status deleted		  
+		  ad.setStatus(Status.DELETED);
+		  //remove from seller published list
+		  ((Seller)users.getUsers().get(ad.getSellerName()).getRole()).getPublishedAds().remove(adName);
+		  ((Seller)users.getUsers().get(ad.getSellerName()).getRole()).getPendingProductAds().remove(adName);
+		  ((Seller)users.getUsers().get(ad.getSellerName()).getRole()).getDeliveredProductAds().remove(adName);
+		  
+		  //remove from all user lists
+		  for(User u : users.getUsers().values()) {
+			  
+			  if(u.getRole() instanceof Buyer) {
+				  
+				  Buyer b = (Buyer) u.getRole();
+				  
+				  if(b.getFavoriteAds().contains(adName)) {
+					  b.getFavoriteAds().remove(adName);
+				  }
+				  if(b.getOrderedProductAds().contains(adName)) {
+					  b.getOrderedProductAds().remove(adName);
+				  }
+				  if(b.getDeliveredProductAds().contains(adName)) {
+					  b.getDeliveredProductAds().remove(adName);
+				  }
+			  }			  
+
+		  }	  
+		  
+		  
+		  //remove if in certain category
+		  for(Category c : categories.getCategories().values()) {
+			  if(c.getAds().contains(adName)) {
+				  c.getAds().remove(adName);
+			  }
+		  }	
+		  
+		  context.setAttribute("UserDAO", users); 
+		  context.setAttribute("AdDAO", ads);
+		  context.setAttribute("CategoryDAO", categories);
+	  
+		  return Response.ok().build(); 
+	  }
+	  
+	  @POST	  
+	  @Path("/edit_ad_admin")	  
+	  @Consumes(MediaType.APPLICATION_JSON)	  
+	  @Produces(MediaType.APPLICATION_JSON) 
+	  public Response editAdAdmin(Ad ad, @Context HttpServletRequest request) {
+		  AdDAO ads = (AdDAO)context.getAttribute("AdDAO");
+		  
+		  //set original posting date
+		  ad.setPostingDate(ads.getAds().get(ad.getName()).getPostingDate());
+		  //set number of favorite lists that this ad is in
+		  ad.setInFavoriteLists(ads.getAds().get(ad.getName()).getInFavoriteLists());
+		  
+		  //replace ad value 
+		  ads.getAds().put(ad.getName(), ad);
+		  
+		  context.setAttribute("AdDAO", ads);
+		  
+		  return Response.ok().build();
+	  }
+	 
 }

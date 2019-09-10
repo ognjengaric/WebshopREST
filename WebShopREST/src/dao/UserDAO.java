@@ -9,13 +9,13 @@ public class UserDAO {
 	private HashMap<String, User> users = new HashMap<>();
 	
 	public UserDAO(){
+		users.put("admin", new User("admin", "admin"));
 	}
 	
 
 	public HashMap<String, User> getUsers() {
 		return users;
 	}
-
 	public void setUsers(HashMap<String, User> users) {
 		this.users = users;
 	}

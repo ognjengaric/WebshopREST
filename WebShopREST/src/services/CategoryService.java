@@ -39,14 +39,18 @@ public class CategoryService {
 		return categories.getCategories().values();
 	}
 	
-	@GET
-	@Path("/catgegory-ads/{categoryName}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Collection<Ad> getCategoryAds(@PathParam("categoryName") String categoryName, @Context HttpServletRequest request)
-	{
-		CategoryDAO categories = (CategoryDAO) context.getAttribute("CategoryDAO");	
-		return categories.getCategories().get(categoryName).getAds();
-	}
-	
-}
+/*
+ * @GET
+ * 
+ * @Path("/category_ads/{categoryName}")
+ * 
+ * @Consumes(MediaType.APPLICATION_JSON)
+ * 
+ * @Produces(MediaType.APPLICATION_JSON) public Collection<Ad>
+ * getCategoryAds(@PathParam("categoryName") String categoryName, @Context
+ * HttpServletRequest request) { CategoryDAO categories = (CategoryDAO)
+ * context.getAttribute("CategoryDAO"); return
+ * categories.getCategories().get(categoryName).getAds(); }
+ */ 
+ }
+ 

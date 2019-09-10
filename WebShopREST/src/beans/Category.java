@@ -1,12 +1,12 @@
 package beans;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Category {
 
 	private String name;
 	private String description;
-	private List<Ad> ads;
+	private ArrayList<String> ads;
 	
 	public boolean isActive;
 	
@@ -29,10 +29,10 @@ public class Category {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public List<Ad> getAds() {
+	public ArrayList<String> getAds() {
 		return ads;
 	}
-	public void setAds(List<Ad> ads) {
+	public void setAds(ArrayList<String> ads) {
 		this.ads = ads;
 	}
 	public boolean isActive() {

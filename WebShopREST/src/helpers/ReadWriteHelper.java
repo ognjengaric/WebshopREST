@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonParseException;	
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import beans.Administrator;
 import beans.Buyer;
@@ -55,6 +57,8 @@ public class ReadWriteHelper {
 	//Jackson converts role object to linkeHashMap - this method will convert linkeHashMap object to certain role object properly
 	public static void convertToCertainRoleObject(User u) {
 		ObjectMapper o = new ObjectMapper();
+		o.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, true);
+		
 		try {
 			Buyer b = o.convertValue(u.getRole(), Buyer.class); 
 			u.setRole(b);

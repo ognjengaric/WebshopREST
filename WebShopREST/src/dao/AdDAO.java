@@ -3,6 +3,7 @@ package dao;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import beans.Ad;
 import beans.Ad.Status;
@@ -26,29 +27,19 @@ public class AdDAO {
 	//Promeni u oglase koji se nalaze u najvise omiljenih
 	public ArrayList<Ad> favoriteAds(){
 		 
-		ArrayList<Ad> favoriteAds = new ArrayList<Ad>(this.publishableAds());		
+		ArrayList<Ad> favoriteAds = new ArrayList<Ad>(this.ads.values());		
 		Collections.sort(favoriteAds);
 		
-		if(!(favoriteAds.size() < 10)) {
+		favoriteAds = (ArrayList<Ad>)this.ads.values().stream().filter(ad -> ad.getStatus() == Status.PUBLISHED || ad.getStatus() == Status.DELIVERED).collect(Collectors.toList());
+		
+		if(favoriteAds.size() > 10) {
 			favoriteAds.subList(10, favoriteAds.size()).clear();
 		}	
 		
 		return favoriteAds;
 		
 	}
-	
-	//ads to be published
-	public ArrayList<Ad> publishableAds(){
-		ArrayList<Ad> retList = new ArrayList<Ad>();
-		
-		for(Ad ad : this.ads.values()) {
-			if(ad.getStatus() == Status.PUBLISHED) {
-				retList.add(ad);
-			}
-		}
-		
-		return retList;
-	}
+
 
 
 	@Override

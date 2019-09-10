@@ -1,11 +1,15 @@
 package services;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -96,7 +100,7 @@ public class UserService {
 	}
 	
 	@POST  //client does not send body data when get is used + sending token in body for safety reasons, not in URL
-	@Path("/user-data")
+	@Path("/user_data")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUserData(String accessToken,  @Context HttpServletRequest request){
@@ -115,7 +119,7 @@ public class UserService {
 	
 	
 	@POST
-	@Path("/make-favorite/{adName}")
+	@Path("/make_favorite/{adName}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addFavoriteAd(@PathParam("adName") String adName, String accessToken, @Context HttpServletRequest request) {
@@ -125,32 +129,39 @@ public class UserService {
 		
 		Ad ad =  ads.getAds().get(adName);
 		
+		ad.setInFavoriteLists(ad.getInFavoriteLists()+1);
+		
 		User user = users.findBySessionID(accessToken);
-		((Buyer)user.getRole()).getFavoriteAds().add(ad);
+		((Buyer)user.getRole()).getFavoriteAds().add(ad.getName());
 		
 		context.setAttribute("UserDAO", users);
+		context.setAttribute("AdDAO", ads);
 		
 		return Response.ok().build();	
 	}
 	
 	@POST
-	@Path("/remove-favorite/{adName}")
+	@Path("/remove_favorite/{adName}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response removeFavoriteAd(@PathParam("adName") String adName, String accessToken, @Context HttpServletRequest request) {
 		UserDAO users = (UserDAO) context.getAttribute("UserDAO");		
+		AdDAO ads = (AdDAO)  context.getAttribute("AdDAO");
+		
+		Ad ad =  ads.getAds().get(adName);
+		
+		ad.setInFavoriteLists(ad.getInFavoriteLists()-1);
+		
 		
 		User user = users.findBySessionID(accessToken);
 		
 		Buyer b = (Buyer)user.getRole();
 	
-		for (Ad ad : b.getFavoriteAds()) {
-			if(ad.getName() == adName) {
-				b.getFavoriteAds().remove(ad);
-			}
-		}
+
+		b.getFavoriteAds().remove(adName);
 		
 		context.setAttribute("UserDAO", users);
+		context.setAttribute("AdDAO", ads);
 		
 		return Response.ok(user).build();	
 	}
@@ -172,15 +183,14 @@ public class UserService {
 		User user = users.findBySessionID(accessToken);
 		Buyer b = (Buyer)user.getRole();
 		//Insert ad to buyer ordered list
-		b.getOrderedProductAds().add(ad);	
+		b.getOrderedProductAds().add(adName);	
 		
 
 		Seller s = (Seller)users.getUsers().get(ad.getSellerName()).getRole();
 		//Insert to seller pending ads
-		s.getPendingProductAds().add(ad);		
+		s.getPendingProductAds().add(adName);		
 		//Remove ad from seller published ads
-		System.out.println(s);
-		s.getPublishedAds().remove(ad);
+		s.getPublishedAds().remove(adName);
 		
 
 		
@@ -191,7 +201,7 @@ public class UserService {
 	}
 	
 	@POST
-	@Path("/mark-delivered/{adName}")
+	@Path("/mark_delivered/{adName}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response markAsDelivered(@PathParam("adName") String adName, String accessToken, @Context HttpServletRequest request) {
@@ -202,23 +212,51 @@ public class UserService {
 		
 		//Set ad status to published - to be available for ordering again 
 		Ad ad =  ads.getAds().get(adName);
-		ad.setStatus(Status.PUBLISHED);
+		ad.setStatus(Status.DELIVERED);
 		
 		User user = users.findBySessionID(accessToken);
 		Buyer b = (Buyer)user.getRole();
 		
 		//Insert ad to buyer delivered list
-		b.getDeliveredProductAds().add(ad);	
+		b.getDeliveredProductAds().add(adName);	
 		//Remove from buyers ordered list
-		b.getOrderedProductAds().remove(ad);
+		b.getOrderedProductAds().remove(adName);
 		
 		Seller s = (Seller)users.getUsers().get(ad.getSellerName()).getRole();
 		//Remove from seller pending ads
-		s.getPendingProductAds().remove(ad);
-		//Ad to seller delivered ads
-		s.getDeliveredProductAds().add(ad);
+		s.getPendingProductAds().remove(adName);
+		//Add to seller delivered ads
+		s.getDeliveredProductAds().add(adName);
+		//Add to seller published ads
+		s.getPublishedAds().add(adName);
 		
 		return Response.ok().build();	
+	}
+	
+	@GET
+	@Path("get_users")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Collection<User> getUsers(@Context HttpServletRequest request){
+		UserDAO users = (UserDAO) context.getAttribute("UserDAO");		
+		return users.getUsers().values();
+	}
+	
+	@POST
+	@Path("/set_role/{username}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response changeRole(@PathParam("username") String username, String roleName, @Context HttpServletRequest request){
+		UserDAO users = (UserDAO) context.getAttribute("UserDAO");
+		
+		User u = users.getUsers().get(username);
+		System.out.println(roleName);
+		if(roleName.equals("Buyer")) {
+			u.setRole(new Seller());
+		} 
+		if(roleName.equals("Seller")) {
+			u.setRole(new Buyer());
+		}	
+		
+		return Response.ok().build();
 	}
 	
 	
