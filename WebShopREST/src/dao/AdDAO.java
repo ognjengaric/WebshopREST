@@ -28,18 +28,17 @@ public class AdDAO {
 	public ArrayList<Ad> favoriteAds(){
 		 
 		ArrayList<Ad> favoriteAds = new ArrayList<Ad>(this.ads.values());		
-		Collections.sort(favoriteAds);
 		
 		favoriteAds = (ArrayList<Ad>)this.ads.values().stream().filter(ad -> ad.getStatus() == Status.PUBLISHED || ad.getStatus() == Status.DELIVERED).collect(Collectors.toList());
+		
+		Collections.sort(favoriteAds);	
 		
 		if(favoriteAds.size() > 10) {
 			favoriteAds.subList(10, favoriteAds.size()).clear();
 		}	
-		
 		return favoriteAds;
 		
 	}
-
 
 
 	@Override

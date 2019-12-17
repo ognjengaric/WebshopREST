@@ -7,19 +7,19 @@ public class Seller{
 	private ArrayList<String> publishedAds;
 	private ArrayList<String> deliveredProductAds;
 	private ArrayList<String> pendingProductAds;
-	private ArrayList<Message> messages;
 	private int numberOfLikes;
 	private int numberOfDislikes;
 	private String name;
+	private int numberOfWarnings;
 	
 	public Seller() {
 		this.publishedAds = new ArrayList<String>();
 		this.deliveredProductAds = new ArrayList<String>();
-		this.pendingProductAds = new ArrayList<String>();
-		this.messages = new ArrayList<>();
+		this.pendingProductAds = new ArrayList<String>();;
 		this.numberOfLikes = 0;
 		this.numberOfDislikes = 0;
 		this.name = "Seller";
+		this.setNumberOfWarnings(0);
 	}
 	
 	public ArrayList<String> getPublishedAds() {
@@ -42,12 +42,6 @@ public class Seller{
 	public void setDeliveredProductAds(ArrayList<String> deliveredProductAds) {
 		this.deliveredProductAds = deliveredProductAds;
 	}
-	public ArrayList<Message> getMessages() {
-		return messages;
-	}
-	public void setMessages(ArrayList<Message> messages) {
-		this.messages = messages;
-	}
 	public int getNumberOfLikes() {
 		return numberOfLikes;
 	}
@@ -69,9 +63,18 @@ public class Seller{
 		this.pendingProductAds = pendingProductAds;
 	}
 	
+	public int getNumberOfWarnings() {
+		return numberOfWarnings;
+	}
+
+	public void setNumberOfWarnings(int numberOfWarnings) {
+		this.numberOfWarnings = numberOfWarnings;
+	}
 	
 	@Override
 	public String toString() {
 		return "\nRole: Seller \nPublished: "+ this.publishedAds +"\nPending:" + this.pendingProductAds + "\nDelivered:" + this.deliveredProductAds;
 	}
+	
+	
 }

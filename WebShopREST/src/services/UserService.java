@@ -1,7 +1,6 @@
 package services;
 
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.annotation.PostConstruct;
@@ -20,9 +19,11 @@ import javax.ws.rs.core.Response;
 import beans.Ad;
 import beans.Ad.Status;
 import beans.Buyer;
+import beans.Message;
 import beans.Seller;
 import beans.User;
 import dao.AdDAO;
+import dao.MessageDAO;
 import dao.UserDAO;
 import helpers.UUIDGenerator;
 
@@ -36,9 +37,6 @@ public class UserService {
 		if (context.getAttribute("UserDAO") == null) {	    
 			context.setAttribute("UserDAO", new UserDAO());
 		}
-		if(context.getAttribute("AdDAO") == null) {
-			context.setAttribute("AdDAO", new AdDAO());
-		} 
 	}
 		
 	
@@ -100,10 +98,10 @@ public class UserService {
 	}
 	
 	@POST  //client does not send body data when get is used + sending token in body for safety reasons, not in URL
-	@Path("/user_data")
+	@Path("/user_data") //get data by access token - used for fetching data of logged in user
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getUserData(String accessToken,  @Context HttpServletRequest request){
+	public Response getUserDataByToken(String accessToken,  @Context HttpServletRequest request){
 		
 		UserDAO users = (UserDAO) context.getAttribute("UserDAO");
 		
@@ -112,6 +110,22 @@ public class UserService {
 		if(user == null)
 		{
 			return Response.status(400).build();
+		}
+		
+		return Response.ok(user).build();
+	}
+	
+	@GET
+	@Path("/user_data/{username}")	//get data by username
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getUserDataByName(@PathParam ("username") String username, @Context HttpServletRequest request) {
+		UserDAO users = (UserDAO) context.getAttribute("UserDAO");
+		
+		User user = users.getUsers().get(username);
+		
+		if(user == null) {
+			Response.status(400).build();
 		}
 		
 		return Response.ok(user).build();
@@ -208,6 +222,7 @@ public class UserService {
 
 		UserDAO users = (UserDAO) context.getAttribute("UserDAO");		
 		AdDAO ads = (AdDAO)  context.getAttribute("AdDAO");
+		MessageDAO messages = (MessageDAO) context.getAttribute("MessageDAO");
 		
 		
 		//Set ad status to published - to be available for ordering again 
@@ -230,11 +245,20 @@ public class UserService {
 		//Add to seller published ads
 		s.getPublishedAds().add(adName);
 		
+		
+		 String msgContent = Message.successfullyDelivered(adName, user.getUsername());
+		 Message msg = new Message("NOTIFICATIONS", ad.getSellerName(), "Product delivered", msgContent);
+		 messages.getMessages().put(msg.getId(), msg);
+		
+		context.setAttribute("UserDAO", users);
+		context.setAttribute("AdDAO", ads);
+		context.setAttribute("MessageDAO", messages);
+		
 		return Response.ok().build();	
 	}
 	
 	@GET
-	@Path("get_users")
+	@Path("/get_users")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Collection<User> getUsers(@Context HttpServletRequest request){
 		UserDAO users = (UserDAO) context.getAttribute("UserDAO");		
@@ -248,16 +272,91 @@ public class UserService {
 		UserDAO users = (UserDAO) context.getAttribute("UserDAO");
 		
 		User u = users.getUsers().get(username);
-		System.out.println(roleName);
+		
+		
 		if(roleName.equals("Buyer")) {
+			
+			Buyer b = (Buyer)u.getRole();
+			
+			if(!b.getDeliveredProductAds().isEmpty() || !b.getOrderedProductAds().isEmpty() || !b.getFavoriteAds().isEmpty()) {
+				return Response.status(400).build();
+			}
+			
 			u.setRole(new Seller());
 		} 
 		if(roleName.equals("Seller")) {
+			
+			Seller s = (Seller)u.getRole();
+			
+			if(!s.getDeliveredProductAds().isEmpty() || !s.getPendingProductAds().isEmpty() || !s.getPublishedAds().isEmpty()) {
+				return Response.status(400).build();
+			}
+			
 			u.setRole(new Buyer());
 		}	
 		
+		context.setAttribute("UserDAO", users);
+		
 		return Response.ok().build();
 	}
+	
+	  @POST	  
+	  @Path("/like_profile/{username}")	  
+	  @Consumes(MediaType.APPLICATION_JSON)	  
+	  @Produces(MediaType.APPLICATION_JSON)
+	  public Response likeSellerProfile(@PathParam("username") String username, @Context HttpServletRequest request){
+		  UserDAO users = (UserDAO) context.getAttribute("UserDAO");
+		  
+		  User user = users.getUsers().get(username);
+		  
+		  if(user.getRole() instanceof Seller) {
+			  Seller s  = (Seller)user.getRole();
+			  s.setNumberOfLikes(s.getNumberOfLikes() + 1);
+			  
+			  return Response.ok().build();
+		  }
+		  
+		  context.setAttribute("UserDAO", users);
+		  
+		  return Response.status(400).build();		  
+	  }
+	  
+	  @POST	  
+	  @Path("/dislike_profile/{username}")	  
+	  @Consumes(MediaType.APPLICATION_JSON)	  
+	  @Produces(MediaType.APPLICATION_JSON)
+	  public Response dislikeSellerProfile(@PathParam("username") String username, @Context HttpServletRequest request){
+		  UserDAO users = (UserDAO) context.getAttribute("UserDAO");
+		  
+		  User user = users.getUsers().get(username);
+		  
+		  if(user.getRole() instanceof Seller) {
+			  Seller s  = (Seller)user.getRole();
+			  s.setNumberOfDislikes(s.getNumberOfDislikes() + 1);
+			  
+			  return Response.ok().build();
+		  }
+		  
+		  context.setAttribute("UserDAO", users);
+		  
+		  return Response.status(400).build();		  
+	  }
+	  
+	  
+	  @POST	  
+	  @Path("/reset_warning_count/{username}")	  
+	  @Consumes(MediaType.APPLICATION_JSON)	  
+	  @Produces(MediaType.APPLICATION_JSON)
+	  public Response resetWarningCount(@PathParam("username") String username, @Context HttpServletRequest request){
+		  UserDAO users = (UserDAO) context.getAttribute("UserDAO");
+		  
+		  Seller s =(Seller)users.getUsers().get(username).getRole();
+		  s.setNumberOfWarnings(0);
+		  
+		  context.setAttribute("UserDAO", users);
+		  return Response.ok().build();
+	  }
+	  
 	
 	
 }

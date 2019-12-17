@@ -2,7 +2,11 @@ package beans;
 
 import java.util.ArrayList;
 
+import helpers.UUIDGenerator;
+
 public class Category {
+	
+	private String id;
 
 	private String name;
 	private String description;
@@ -11,6 +15,9 @@ public class Category {
 	public boolean isActive;
 	
 	public Category() {
+		this.setId(UUIDGenerator.getUUID().toString());
+		this.isActive = true;
+		this.ads = new ArrayList<String>();
 	}	
 	
 	public Category(String name) {
@@ -35,11 +42,24 @@ public class Category {
 	public void setAds(ArrayList<String> ads) {
 		this.ads = ads;
 	}
-	public boolean isActive() {
+	public boolean getIsActive() {
 		return isActive;
 	}
-	public void setActive(boolean isActive) {
+	public void setIsActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}	
+	
+	@Override
+	public String toString() {
+		return this.id;
+	}
 	
 }

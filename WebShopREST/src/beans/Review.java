@@ -1,16 +1,24 @@
 package beans;
 
+import helpers.UUIDGenerator;
+
 public class Review {
 	
-	//oglas - ime ili objekat
-	//kupac koji je napisao recenziju - ime ili objekat
+	private String id;
+	private String adName;
+	private String author;
 	private String title;
 	private String content;
-	//slika
+	private String image;
 	private boolean isDescriptionAccurate;
 	private boolean isDealFulfilled;
 	
 	private boolean isActive;
+	
+	public Review() {
+		this.isActive = true;
+		this.setId(UUIDGenerator.getUUID());
+	}
 	
 	public String getTitle() {
 		return title;
@@ -24,22 +32,48 @@ public class Review {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public boolean isDescriptionAccurate() {
+	public boolean getIsDescriptionAccurate() {
 		return isDescriptionAccurate;
 	}
-	public void setDescriptionAccurate(boolean isDescriptionAccurate) {
+	public void setIsDescriptionAccurate(boolean isDescriptionAccurate) {
 		this.isDescriptionAccurate = isDescriptionAccurate;
 	}
-	public boolean isDealFulfilled() {
+	public boolean getIsDealFulfilled() {
 		return isDealFulfilled;
 	}
-	public void setDealFulfilled(boolean isDealFulfilled) {
+	public void setIsDealFulfilled(boolean isDealFulfilled) {
 		this.isDealFulfilled = isDealFulfilled;
 	}
-	public boolean isActive() {
+	public boolean getIsActive() {
 		return isActive;
 	}
-	public void setActive(boolean isActive) {
+	public void setIsActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+	public String getAdName() {
+		return adName;
+	}
+	public void setAdName(String adName) {
+		this.adName = adName;
+	}
+	public String getAuthor() {
+		return author;
+	}
+	public void setAuthor(String reviewAuthor) {
+		this.author = reviewAuthor;
+	}
+	public String getImage() {
+		return image;
+	}
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 }

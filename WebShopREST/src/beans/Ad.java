@@ -161,10 +161,7 @@ public class Ad implements Comparable<Ad>{
 	
 	@Override
 	public String toString() {
-		return "Ad [name=" + name + ", price=" + price + ", description=" + description + ", image=" + image + ", city="
-				+ city + ", expirationDate=" + expirationDate + ", postingDate=" + postingDate + ", numberOfLikes="
-				+ numberOfLikes + ", numberOfDislikes=" + numberOfDislikes + ", reviews=" + reviews + ", status="
-				+ status + ", sellerName:" + sellerName + "]";
+		return "Ad [name=" + name + "; favNr" + inFavoriteLists + "]\n";
 	}
 	//izmeni za favorites
 	@Override
